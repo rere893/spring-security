@@ -2,78 +2,103 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>書籍管理</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input { padding: 8px; width: 200px; }
-        button { padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .action-btn { padding: 5px 10px; margin-right: 5px; }
-        .delete-btn { background-color: #dc3545; }
-        .delete-btn:hover { background-color: #c82333; }
-        .edit-btn { background-color: #28a745; }
-        .edit-btn:hover { background-color: #218838; }
-    </style>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css">
 </head>
+<!-- HTML内に追加 -->
+<style>
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .form-control.is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+</style>
 <body>
-    <h1>書籍管理システム</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">書籍管理システム</h1>
 
-    <h2>新規書籍登録</h2>
-    <form th:action="@{/books/create}" method="post">
-        <div class="form-group">
-            <label>タイトル:</label>
-            <input type="text" name="title" required>
-        </div>
-        <div class="form-group">
-            <label>著者:</label>
-            <input type="text" name="author" required>
-        </div>
-        <div class="form-group">
-            <label>ISBN:</label>
-            <input type="text" name="isbn" required>
-        </div>
-        <div class="form-group">
-            <label>価格:</label>
-            <input type="number" name="price" step="0.01" required>
-        </div>
-        <button type="submit">登録</button>
-    </form>
+        <!-- 登録フォーム -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">書籍を登録</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/books/create}" th:object="${bookForm}" method="post">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">タイトル</label>
+                        <input type="text" class="form-control" id="title" th:field="*{title}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                    </div>
 
-    <h2>書籍一覧</h2>
-    <table th:if="${books.size() > 0}">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>タイトル</th>
-                <th>著者</th>
-                <th>ISBN</th>
-                <th>価格</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="book : ${books}">
-                <td th:text="${book.id}"></td>
-                <td th:text="${book.title}"></td>
-                <td th:text="${book.author}"></td>
-                <td th:text="${book.isbn}"></td>
-                <td th:text="${book.price}"></td>
-                <td>
-                    <a th:href="@{/books/edit(id=${book.id})}">
-                        <button class="action-btn edit-btn">編集</button>
-                    </a>
-                    <form th:action="@{/books/delete(id=${book.id})}" method="post" style="display:inline;">
-                        <button type="submit" class="action-btn delete-btn" onclick="return confirm('削除しますか？')">削除</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <p th:if="${books.size() == 0}">登録された書籍がありません</p>
+                    <div class="mb-3">
+                        <label for="author" class="form-label">著者</label>
+                        <input type="text" class="form-control" id="author" th:field="*{author}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="isbn" class="form-label">ISBN</label>
+                        <input type="text" class="form-control" id="isbn" th:field="*{isbn}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="price" class="form-label">価格</label>
+                        <input type="number" class="form-control" id="price" th:field="*{price}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">登録</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 一覧表示 -->
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">登録済み書籍</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>タイトル</th>
+                            <th>著者</th>
+                            <th>ISBN</th>
+                            <th>価格</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="book : ${books}">
+                            <td th:text="${book.title}"></td>
+                            <td th:text="${book.author}"></td>
+                            <td th:text="${book.isbn}"></td>
+                            <td th:text="${book.price}"></td>
+                            <td>
+                                <a th:href="@{/books/edit(id=${book.id})}" class="btn btn-sm btn-warning">編集</a>
+                                <form th:action="@{/books/delete(id=${book.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">削除</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

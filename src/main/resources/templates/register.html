@@ -1,0 +1,55 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザ登録</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">ユーザ登録</h4>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <form th:action="@{/register}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">ユーザー名</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">パスワード</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">ユーザタイプ</label>
+                                <select class="form-select" id="role" name="role" required>
+                                    <option value="">選択してください</option>
+                                    <option value="ROLE_USER">一般ユーザー</option>
+                                    <option value="ROLE_ADMIN">管理ユーザー</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">登録</button>
+                        </form>
+
+                        <hr>
+                        <p class="text-center">
+                            <a href="/login">ログイン画面へ</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
