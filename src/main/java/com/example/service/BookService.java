@@ -21,8 +21,11 @@ public class BookService {
     }
 
     public Book createBook(Book book) {
-        return bookRepository.save(book);
+    if (bookRepository.existsByIsbn(book.getIsbn())) {
+        throw new IllegalArgumentException("ISBN already exists: " + book.getIsbn());
     }
+    return bookRepository.save(book);
+}
 
     public Book updateBook(Long id, Book bookDetails) {
         Optional<Book> existingBook = bookRepository.findById(id);

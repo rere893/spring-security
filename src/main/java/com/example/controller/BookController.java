@@ -46,24 +46,33 @@ public class BookController {
 
     // 編集画面表示
     @GetMapping("/edit")
-    public String editBookForm(@RequestParam Long id, Model model) {
-        Book book = bookService.getBookById(id).orElse(null);
-        if (book != null) {
-            BookForm bookForm = new BookForm();
-            bookForm.setTitle(book.getTitle());
-            bookForm.setAuthor(book.getAuthor());
-            bookForm.setIsbn(book.getIsbn());
-            bookForm.setPrice(book.getPrice());
-            model.addAttribute("bookForm", bookForm);
-            model.addAttribute("bookId", id);
-            return "edit";
-        }
-        return "redirect:/books";
+public String editBookForm(@RequestParam Long id, Model model) {
+
+    Book book = bookService.getBookById(id).orElse(null);
+
+    if (book != null) {
+
+        BookForm bookForm = new BookForm();
+        //Book book = bookService.findById(id);
+
+        bookForm.setTitle(book.getTitle());
+        bookForm.setAuthor(book.getAuthor());
+        bookForm.setIsbn(book.getIsbn());
+        bookForm.setPrice(book.getPrice());
+
+        model.addAttribute("book", book);
+        model.addAttribute("bookForm", bookForm);
+        model.addAttribute("bookId", id);
+
+        return "edit";
     }
+
+    return "redirect:/books";
+}
 
     // 書籍更新（バリデーション付き）
     @PostMapping("/edit")
-    public String updateBook(@RequestParam Long id, @Valid @ModelAttribute BookForm bookForm, BindingResult result, Model model) {
+    public String updateBook(@RequestParam Long id, @Valid @ModelAttribute Book bookForm, BindingResult result, Model model) {
         if (result.hasErrors()) {
             // バリデーションエラーがある場合、編集画面に戻す
             model.addAttribute("bookId", id);
